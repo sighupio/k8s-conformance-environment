@@ -31,13 +31,13 @@ variable "trusted_cidrs" {
 
 variable "master_instance_type" {
   type        = string
-  description = "Instance type used to run kubernetes control-plane. Choose one: m5.large, m5.xlarge, m5.2xlarge, m5.4xlarge"
+  description = "Instance type used to run Kubernetes control-plane. Choose one: m5.large, m5.xlarge, m5.2xlarge, m5.4xlarge"
   default     = "m5.large"
 }
 
 variable "worker_instance_type" {
   type        = string
-  description = "Instance type used to run kubernetes worker. Choose one: m5.large, m5.xlarge, m5.2xlarge, m5.4xlarge"
+  description = "Instance type used to run Kubernetes worker. Choose one: m5.large, m5.xlarge, m5.2xlarge, m5.4xlarge"
   default     = "m5.xlarge"
 }
 
