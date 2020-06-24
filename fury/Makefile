@@ -32,7 +32,7 @@ apply: check-aws-env check-fury-dir
 ## destroy: Run terraform destroy command
 destroy: check-aws-env check-fury-dir
 	@cd $(fury-dir) && terraform destroy \
-		--auto-approve
+		--auto-approve && rm -rf cluster.key .terraform
 
 ## ssh_command_help: Get Help to ssh
 ssh_command_help: check-aws-env check-fury-dir
