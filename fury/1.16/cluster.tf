@@ -8,8 +8,12 @@ module "fury" {
   cluster_name    = "fury"
   cluster_version = "1.16.2"
 
-  public_subnet_id  = "subnet-01afb30699efd2ddc"
-  private_subnet_id = "subnet-00bb7ff43751d9470"
+  worker_instance_type = "m4.xlarge"
+  master_instance_type = "m4.large"
+  worker_count = 2
+
+  public_subnet_id  = "subnet-2e2fda52"
+  private_subnet_id = "subnet-8308f0cf"
   pod_network_cidr  = "172.16.0.0/16"
 
 }
