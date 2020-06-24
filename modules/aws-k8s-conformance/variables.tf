@@ -66,6 +66,8 @@ locals {
   # https://aws.amazon.com/ec2/pricing/on-demand/
   # Just split by ~2 the ondemenad price.
   sport_prices = {
+    "m4.large" : "0.07"
+    "m4.xlarge" : "0.12"
     "m5.large" : "0.07"
     "m5.xlarge" : "0.12"
     "m5.2xlarge" : "0.20"
