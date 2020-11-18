@@ -1,1 +1,3 @@
 cluster.key
+kubeconfig
+master.key
