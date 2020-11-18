@@ -39,6 +39,7 @@ data "template_file" "init_worker" {
     cluster_version    = var.cluster_version
     master_private_ip  = aws_spot_instance_request.master.private_ip
     join_token         = "${random_string.firts_part.result}.${random_string.second_part.result}"
+    wait_for_script    = indent(8, file("${path.module}/resources/wait-for.sh"))
   }
 }
 

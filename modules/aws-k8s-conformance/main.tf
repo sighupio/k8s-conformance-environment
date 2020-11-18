@@ -12,4 +12,12 @@ provider "template" {
 
 provider "random" {
   version = "~> 2.2"
-} 
+}
+
+provider "null" {
+  version = "~> 3.0"
+}
+
+provider "local" {
+  version = "~> 2.0"
+}

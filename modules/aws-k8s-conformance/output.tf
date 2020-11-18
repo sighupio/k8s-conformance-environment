@@ -18,3 +18,7 @@ output "worker_private_ip" {
   description = "Worker nodes private ip list"
   value       = aws_spot_instance_request.worker.*.private_ip
 }
+
+output "kubeconfig" {
+  value = data.local_file.kubeconfig.content
+}

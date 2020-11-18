@@ -53,6 +53,7 @@ runcmd:
   - kubeadm init --pod-network-cidr=${pod_network_cidr} --apiserver-cert-extra-sans=${public_ip} --token=${join_token} --token-ttl=0 --node-name=$(hostname -f)
   - mkdir -p /home/${cluster_name}/.kube
   - cp -i /etc/kubernetes/admin.conf /home/${cluster_name}/.kube/config
+  - chown ${cluster_name}:${cluster_name} /home/${cluster_name}/.kube
   - chown ${cluster_name}:${cluster_name} /home/${cluster_name}/.kube/config
   - export KUBECONFIG=/etc/kubernetes/admin.conf
   - kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.12/deploy/local-path-storage.yaml
