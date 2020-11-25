@@ -24,10 +24,6 @@ resource "aws_security_group_rule" "master_egress" {
 resource "tls_private_key" "master" {
   algorithm = "RSA"
   rsa_bits  = 4096
-
-  provisioner "local-exec" {
-    command = "echo ${base64encode(tls_private_key.master.private_key_pem)} | base64 -d > ${path.root}/master.key && chmod 600 ${path.root}/master.key"
-  }
 }
 
 data "template_file" "init_master" {

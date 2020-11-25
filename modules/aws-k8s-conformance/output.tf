@@ -20,5 +20,5 @@ output "worker_private_ip" {
 }
 
 output "kubeconfig" {
-  value = data.local_file.kubeconfig.content
+  value = base64decode(data.local_file.kubeconfig.content_base64)
 }

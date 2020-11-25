@@ -5,6 +5,10 @@ resource "null_resource" "kubeconfig" {
   }
 
   provisioner "local-exec" {
+    command = "echo ${base64encode(tls_private_key.master.private_key_pem)} | base64 -d > ${path.root}/master.key && chmod 600 ${path.root}/master.key"
+  }
+
+  provisioner "local-exec" {
     command     = "./wait-for.sh ${aws_eip.master.public_ip}:6443 -t 1200 -- echo \"Cluster Ready\""
     working_dir = "${path.module}/resources"
   }
@@ -31,6 +35,7 @@ resource "null_resource" "kubeconfig" {
 }
 
 data "local_file" "kubeconfig" {
-  filename   = "${path.root}/kubeconfig"
+  filename = "${path.root}/kubeconfig"
+
   depends_on = [null_resource.kubeconfig]
 }
