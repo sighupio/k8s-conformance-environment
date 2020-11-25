@@ -1,7 +1,7 @@
 resource "null_resource" "kubeconfig" {
 
   triggers = {
-    master_instance_id = aws_spot_instance_request.master.spot_instance_id
+    always_run = timestamp()
   }
 
   provisioner "local-exec" {
