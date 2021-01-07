@@ -18,7 +18,7 @@ init: check-aws-env check-fury-dir
         --backend=true \
         --backend-config="bucket=${TERRAFORM_TF_STATE_BUCKET_NAME}" \
         --backend-config="key=${TERRAFORM_TF_STATE_KEY}" \
-        --backend-config="region=${AWS_DEFAULT_REGION}"
+        --backend-config="region=${TERRAFORM_TF_STATE_BUCKET_REGION}"
 
 ## plan: Run terraform plan command
 plan: check-aws-env check-fury-dir
