@@ -43,7 +43,7 @@ runcmd:
   - update-alternatives --set arptables /usr/sbin/arptables-legacy
   - update-alternatives --set ebtables /usr/sbin/ebtables-legacy
   - curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
-  - sh /tmp/get-docker.sh
+  - VERSION=18.09 sh /tmp/get-docker.sh
   - usermod -aG docker ${cluster_name}
   - mkdir -p /etc/systemd/system/docker.service.d
   - systemctl daemon-reload --no-block
