@@ -6,7 +6,7 @@ module "fury" {
   region = data.aws_region.current.name
 
   cluster_name    = "fury"
-  cluster_version = "1.19.4"
+  cluster_version = "1.19.11"
 
   worker_instance_type = "m4.xlarge"
   master_instance_type = "m4.xlarge"
@@ -31,7 +31,7 @@ output "master_public_ip" {
 
 output "ssh_command_help" {
   description = "Long command to ssh the control plane"
-  value       = "cd 1.18 && ${module.fury.ssh_command_help}"
+  value       = "cd 1.19 && ${module.fury.ssh_command_help}"
 }
 
 output "worker_private_ip" {
