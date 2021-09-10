@@ -53,6 +53,12 @@ variable "pod_network_cidr" {
   default     = "192.168.0.0/16"
 }
 
+variable "cgroupdriver" {
+  type        = string
+  description = "cgroup driver for docker. Choose cgroupfs or systemd"
+  default     = "cgroupfs"
+}
+
 locals {
   # https://cloud-images.ubuntu.com/locator/ec2/
   # filter: 18.04 LTS eu- ebs-ssd 2020
