@@ -15,7 +15,8 @@ write_files:
             "max-size": "10m",
             "max-file": "5"
           },
-          "storage-driver": "overlay2"
+          "storage-driver": "overlay2",
+          "exec-opts": ["native.cgroupdriver=${cgroupdriver}"]
         }
     path: /etc/docker/daemon.json
 users:
