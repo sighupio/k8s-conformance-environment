@@ -56,5 +56,5 @@ runcmd:
   - chown ${cluster_name}:${cluster_name} /home/${cluster_name}/.kube
   - chown ${cluster_name}:${cluster_name} /home/${cluster_name}/.kube/config
   - export KUBECONFIG=/etc/kubernetes/admin.conf
-  - kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.12/deploy/local-path-storage.yaml
+  - kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.20/deploy/local-path-storage.yaml
   - "kubectl patch storageclass local-path -p '{\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"true\"}}}'"

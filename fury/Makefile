@@ -55,6 +55,9 @@ endif
 ifndef TERRAFORM_TF_STATE_KEY
 	$(error TERRAFORM_TF_STATE_KEY is undefined)
 endif
+ifndef TERRAFORM_TF_STATE_BUCKET_REGION
+	$(error TERRAFORM_TF_STATE_KEY is undefined)
+endif
 check-fury-dir:
 ifndef fury-dir
 	$(error fury-dir is undefined)
