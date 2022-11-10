@@ -20,6 +20,9 @@ to run CNCF Conformance tests.
 [`aws-k8s-conformance`](modules/aws-k8s-conformance) to create the neccessary
 environments to run the CNCF Conformance e2e tests. You can see more information [here](fury/)
 
+## Run Conformance Tests
+
+To run the conformance tests on the created cluster, follow the instructions [here](https://github.com/cncf/k8s-conformance/blob/master/instructions.md)
 
 ## License
 
