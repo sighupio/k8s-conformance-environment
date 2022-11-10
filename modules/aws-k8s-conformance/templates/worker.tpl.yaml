@@ -1,10 +1,6 @@
 #cloud-config
 write_files:
   - content: |
-        [keyfile]
-        unmanaged-devices=interface-name:cali*;interface-name:tunl*
-    path: /etc/NetworkManager/conf.d/calico.conf
-  - content: |
         ${wait_for_script}
     path: /usr/local/bin/wait-for
     permissions: '0755'
@@ -12,17 +8,90 @@ write_files:
         deb https://apt.kubernetes.io/ kubernetes-xenial main
     path: /etc/apt/sources.list.d/kubernetes.list
   - content: |
-        {
-          "live-restore": true,
-          "log-driver": "json-file",
-          "log-opts": {
-            "max-size": "10m",
-            "max-file": "5"
-          },
-          "storage-driver": "overlay2",
-          "exec-opts": ["native.cgroupdriver=${cgroupdriver}"]
-        }
-    path: /etc/docker/daemon.json
+        [keyfile]
+        unmanaged-devices=interface-name:cali*;interface-name:tunl*
+    path: /etc/NetworkManager/conf.d/calico.conf
+  - content: |
+        # Copyright The containerd Authors.
+        #
+        # Licensed under the Apache License, Version 2.0 (the "License");
+        # you may not use this file except in compliance with the License.
+        # You may obtain a copy of the License at
+        #
+        #     http://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing, software
+        # distributed under the License is distributed on an "AS IS" BASIS,
+        # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        # See the License for the specific language governing permissions and
+        # limitations under the License.
+
+        [Unit]
+        Description=containerd container runtime
+        Documentation=https://containerd.io
+        After=network.target local-fs.target
+
+        [Service]
+        ExecStartPre=-/sbin/modprobe overlay
+        ExecStart=/usr/local/bin/containerd
+
+        Type=notify
+        Delegate=yes
+        KillMode=process
+        Restart=always
+        RestartSec=5
+        # Having non-zero Limit*s causes performance problems due to accounting overhead
+        # in the kernel. We recommend using cgroups to do container-local accounting.
+        LimitNPROC=infinity
+        LimitCORE=infinity
+        LimitNOFILE=infinity
+        # Comment TasksMax if your systemd version does not supports it.
+        # Only systemd 226 and above support this version.
+        TasksMax=infinity
+        OOMScoreAdjust=-999
+
+        [Install]
+        WantedBy=multi-user.target
+    path: /etc/systemd/system/containerd.service
+  - content: |
+        version = 2
+        root = "/var/lib/containerd"
+        state = "/run/containerd"
+        oom_score = 0
+
+        [grpc]
+          max_recv_message_size = 16777216
+          max_send_message_size = 16777216
+
+        [debug]
+          level = "info"
+
+        [metrics]
+          address = ""
+          grpc_histogram = false
+
+        [plugins]
+          [plugins."io.containerd.grpc.v1.cri"]
+            sandbox_image = "k8s.gcr.io/pause:3.2"
+            max_container_log_line_size = 16384
+            [plugins."io.containerd.grpc.v1.cri".containerd]
+              default_runtime_name = "runc"
+              snapshotter = "overlayfs"
+              [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+                [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+                  runtime_type = "io.containerd.runc.v2"
+                  runtime_engine = ""
+                  runtime_root = ""
+                  privileged_without_host_devices = false
+                  base_runtime_spec = ""
+                  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+                    SystemdCgroup = true
+
+            [plugins."io.containerd.grpc.v1.cri".registry]
+              [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+                [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
+                  endpoint = ["https://registry-1.docker.io"]
+    path: /etc/containerd/config.toml
 users:
   - name: ${cluster_name}
     sudo: ALL=(ALL) NOPASSWD:ALL
@@ -34,7 +103,12 @@ runcmd:
   - echo "net.netfilter.nf_conntrack_max=1000000" >> /etc/sysctl.conf
   - sysctl -w net.bridge.bridge-nf-call-iptables=1
   - echo "net.bridge.bridge-nf-call-iptables=1" >> /etc/sysctl.conf
-  - sed -i 's/^#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.d/99-sysctl.conf
+  - sysctl -w net.bridge.bridge-nf-call-ip6tables=1
+  - echo "net.bridge.bridge-nf-call-ip6tables=1" >> /etc/sysctl.conf
+  - systctl -w net.ipv4.ip_forward=1
+  - echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+  - modprobe br_netfilter
+  - modprobe overlay
   - sysctl --quiet --system
   - curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
   - apt-get update
@@ -43,16 +117,13 @@ runcmd:
   - DEBIAN_FRONTEND=noninteractive apt-get autoclean -yq
   - DEBIAN_FRONTEND=noninteractive apt-get autoremove -yq
   - DEBIAN_FRONTEND=noninteractive apt-get install -yq ipset iptables arptables ebtables apt-transport-https nfs-common
-  - update-alternatives --set iptables /usr/sbin/iptables-legacy
-  - update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-  - update-alternatives --set arptables /usr/sbin/arptables-legacy
-  - update-alternatives --set ebtables /usr/sbin/ebtables-legacy
-  - curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
-  - VERSION=18.09 sh /tmp/get-docker.sh
-  - usermod -aG docker ${cluster_name}
-  - mkdir -p /etc/systemd/system/docker.service.d
+  - curl -L -o /tmp/containerd-1.6.8-linux-amd64.tar.gz https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-amd64.tar.gz
+  - tar xvzf /tmp/containerd-1.6.8-linux-amd64.tar.gz --strip-components 1 -C /usr/local/bin
+  - curl -L -o /tmp/runc https://github.com/opencontainers/runc/releases/download/v1.0.3/runc.amd64
+  - chmod +x /tmp/runc
+  - mv /tmp/runc /usr/local/bin/runc
   - systemctl daemon-reload --no-block
-  - systemctl restart docker --no-block
+  - systemctl restart containerd --no-block
   - DEBIAN_FRONTEND=noninteractive apt-get install -yq kubelet=${cluster_version}-00 kubeadm=${cluster_version}-00 kubectl=${cluster_version}-00
   - apt-mark hold kubelet kubeadm kubectl
   - wait-for ${master_private_ip}:6443 -t 1200 -- kubeadm join  --token=${join_token} --discovery-token-unsafe-skip-ca-verification --node-name=$(hostname -f) ${master_private_ip}:6443

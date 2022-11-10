@@ -35,7 +35,7 @@ data "template_file" "init_master" {
     public_ip          = aws_eip.master.public_ip
     join_token         = "${random_string.firts_part.result}.${random_string.second_part.result}"
     pod_network_cidr   = var.pod_network_cidr
-    cgroupdriver       = var.cgroupdriver
+    wait_for_script    = indent(8, file("${path.module}/resources/wait-for.sh"))
   }
 }
 
