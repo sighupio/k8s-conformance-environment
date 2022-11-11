@@ -53,21 +53,11 @@ variable "pod_network_cidr" {
   default     = "192.168.0.0/16"
 }
 
-variable "cgroupdriver" {
-  type        = string
-  description = "cgroup driver for docker. Choose cgroupfs or systemd"
-  default     = "cgroupfs"
-}
-
 locals {
   # https://cloud-images.ubuntu.com/locator/ec2/
-  # filter: 18.04 LTS eu- ebs-ssd 2020
+  # filter: 20.04 LTS eu-
   ubuntu_amis = {
-    "eu-west-1" : "ami-07042e91d04b1c30d"
-    "eu-west-2" : "ami-04cc79dd5df3bffca"
-    "eu-central-1" : "ami-0718a1ae90971ce4d"
-    "eu-west-3" : "ami-0c367ebddcf279dc6"
-    "eu-north-1" : "ami-0e850e0e9c20d9deb"
+    "eu-west-1" : "ami-04e2e94de097d3986"
   }
   # https://aws.amazon.com/ec2/pricing/on-demand/
   # Just split by ~2 the ondemenad price.
@@ -75,8 +65,11 @@ locals {
     "m4.large" : "0.07"
     "m4.xlarge" : "0.12"
     "m5.large" : "0.07"
+    "t3.large" : "0.10"
     "m5.xlarge" : "0.12"
+    "t3.xlarge" : "0.16"
     "m5.2xlarge" : "0.20"
     "m5.4xlarge" : "0.40"
+    "m5a.4xlarge" : "0.45"
   }
 }
