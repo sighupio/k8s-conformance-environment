@@ -37,13 +37,13 @@ data "template_file" "init_worker" {
     ssh_authorized_key = tls_private_key.master.public_key_openssh
     cluster_name       = var.cluster_name
     cluster_version    = var.cluster_version
-    master_private_ip  = aws_spot_instance_request.master.private_ip
+    master_private_ip  = aws_instance.master.private_ip
     join_token         = "${random_string.firts_part.result}.${random_string.second_part.result}"
     wait_for_script    = indent(8, file("${path.module}/resources/wait-for.sh"))
   }
 }
 
-resource "aws_spot_instance_request" "worker" {
+resource "aws_instance" "worker" {
   count                  = var.worker_count
   ami                    = lookup(local.ubuntu_amis, var.region, "")
   instance_type          = var.worker_instance_type
@@ -54,6 +54,4 @@ resource "aws_spot_instance_request" "worker" {
   root_block_device {
     volume_size = 100
   }
-  spot_price           = lookup(local.sport_prices, var.worker_instance_type, "")
-  wait_for_fulfillment = true
 }

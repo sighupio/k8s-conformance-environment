@@ -55,7 +55,7 @@ resource "random_string" "second_part" {
   upper   = false
 }
 
-resource "aws_spot_instance_request" "master" {
+resource "aws_instance" "master" {
   ami                    = lookup(local.ubuntu_amis, var.region, "")
   instance_type          = var.master_instance_type
   subnet_id              = data.aws_subnet.public.id
@@ -65,11 +65,9 @@ resource "aws_spot_instance_request" "master" {
   root_block_device {
     volume_size = 100
   }
-  spot_price           = lookup(local.sport_prices, var.master_instance_type, "")
-  wait_for_fulfillment = true
 }
 
 resource "aws_eip_association" "eip_assoc" {
-  instance_id   = aws_spot_instance_request.master.spot_instance_id
+  instance_id   = aws_instance.master.id
   allocation_id = aws_eip.master.id
 }

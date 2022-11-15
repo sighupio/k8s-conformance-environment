@@ -16,7 +16,7 @@ output "ssh_command_help" {
 
 output "worker_private_ip" {
   description = "Worker nodes private ip list"
-  value       = aws_spot_instance_request.worker.*.private_ip
+  value       = aws_instance.worker.*.private_ip
 }
 
 output "kubeconfig" {
