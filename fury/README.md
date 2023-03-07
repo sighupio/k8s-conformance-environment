@@ -36,7 +36,7 @@ Just run `make` to see available commands:
 $ make
  Choose a command run in fury:
  Don't forget to set fury-dir variable 
- Example usage: make init fury-dir=1.16 
+ Example usage: make init fury-dir=1.25 
 
   init               Run terraform init command
   plan               Run terraform plan command
@@ -45,12 +45,12 @@ $ make
   ssh_command_help   Get Help to ssh
 ```
 
-As `make` command says, you can start creating a 1.14, 1.15 or 1.16 cluster with the following commands:
+As `make` command says, you can start creating a 1.25 cluster with the following commands:
 
 ```bash
-$ make init fury-dir=1.14
-$ make plan fury-dir=1.14
-$ make apply fury-dir=1.14
+$ make init fury-dir=1.25
+$ make plan fury-dir=1.25
+$ make apply fury-dir=1.25
 .
 .
 .
@@ -71,7 +71,7 @@ So you can run `cd 1.14 && terraform output tls_private_key > cluster.key && chm
 to log into the control plane.
 
 ```bash
-$ cd 1.14 && terraform output tls_private_key > cluster.key && chmod 400 cluster.key && ssh -i cluster.key fury@52.214.8.39
+$ cd 1.25 && terraform output tls_private_key > cluster.key && chmod 400 cluster.key && ssh -i cluster.key fury@52.214.8.39
 Welcome to Ubuntu 18.04.4 LTS (GNU/Linux 4.15.0-1058-aws x86_64)
 
  * Documentation:  https://help.ubuntu.com
@@ -105,7 +105,7 @@ After a couple of minutes, you will be able to run `kubectl` commands inside the
 ```bash
 fury@ip-10-100-0-127:~$ kubectl get nodes
 NAME                                          STATUS     ROLES    AGE     VERSION
-ip-10-100-0-127.eu-west-1.compute.internal    NotReady   master   2m12s   v1.14.8
-ip-10-100-10-188.eu-west-1.compute.internal   NotReady   <none>   112s    v1.14.8
-ip-10-100-10-233.eu-west-1.compute.internal   NotReady   <none>   112s    v1.14.8
+ip-10-100-0-127.eu-west-1.compute.internal    NotReady   master   2m12s   v1.25.6
+ip-10-100-10-188.eu-west-1.compute.internal   NotReady   <none>   112s    v1.25.6
+ip-10-100-10-233.eu-west-1.compute.internal   NotReady   <none>   112s    v1.25.6
 ```

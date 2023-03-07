@@ -6,7 +6,7 @@ help: Makefile
 	@echo
 	@echo " Choose a command run in "$(PROJECTNAME)":"
 	@echo " Don't forget to set fury-dir variable "
-	@echo " Example usage: make init fury-dir=1.16 "
+	@echo " Example usage: make init fury-dir=1.25 "
 	@echo
 	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
 	@echo

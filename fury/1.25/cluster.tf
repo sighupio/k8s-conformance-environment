@@ -6,14 +6,14 @@ module "fury" {
   region = data.aws_region.current.name
 
   cluster_name    = "fury"
-  cluster_version = "1.24.7"
+  cluster_version = "1.25.6"
 
-  worker_instance_type = "t3.large"
-  master_instance_type = "t3.large"
+  worker_instance_type = "m5.2xlarge"
+  master_instance_type = "m5.xlarge"
   worker_count = 3
 
-  public_subnet_id  = "subnet-02bab6ece35c25109"
-  private_subnet_id = "subnet-08da9c7869d65c505"
+  public_subnet_id  = "subnet-007bd514ac9ac034f"
+  private_subnet_id = "subnet-0302825f049261249"
   pod_network_cidr  = "10.200.0.0/16"
 
 }
@@ -31,7 +31,7 @@ output "master_public_ip" {
 
 output "ssh_command_help" {
   description = "Long command to ssh the control plane"
-  value       = "cd 1.24 && ${module.fury.ssh_command_help}"
+  value       = "cd 1.25 && ${module.fury.ssh_command_help}"
 }
 
 output "worker_private_ip" {
